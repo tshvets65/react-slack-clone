@@ -12,7 +12,7 @@ const isImage = message => {
 
 const timeFromNow = timestamp => moment(timestamp).fromNow();
 
-const Meesage = ({ message, user }) => {
+const Message = ({ message, user }) => {
   return (
     <Comment>
       <Comment.Avatar src={message.user.avatar} />
@@ -28,4 +28,4 @@ const Meesage = ({ message, user }) => {
   );
 };
 
-export default Meesage;
+export default Message;
