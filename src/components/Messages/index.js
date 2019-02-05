@@ -7,6 +7,7 @@ import MessagesForm from './MessageForm';
 import Message from './Message.js';
 import firebase from '../../firebase';
 import Typing from './Typing';
+import Skeleton from './Skeleton';
 
 class Messages extends Component {
   
@@ -20,7 +21,6 @@ class Messages extends Component {
     user: this.props.currentUser,
     messages: [],
     messagesLoading: true,
-    progressBar: false,
     numUniqueUsers: '',
     searchTerm: '',
     searchLoading: false,
@@ -95,8 +95,7 @@ class Messages extends Component {
       loadedMessages.push(snap.val());
       this.setState({
         messages: loadedMessages,
-        messagesLoading: false,
-        progressBar: false
+        messagesLoading: false
       });
       this.countUniqueUsers(loadedMessages);
       this.countUserPosts(loadedMessages);
@@ -223,8 +222,18 @@ class Messages extends Component {
     ))
   )
 
+  displayMessageSkeleton = loading => (
+    loading ? (
+      <React.Fragment>
+        {[...Array(10)].map((_, i) => (
+          <Skeleton key={i} />
+        ))}
+      </React.Fragment>
+    ) : null
+  )
+
   render() {
-    const { messagesRef, messages, channel, user, progressBar, numUniqueUsers, searchTerm, searchResults, searchLoading, privateChannel, isChannelStarred, typingUsers } = this.state;
+    const { messagesRef, messages, channel, user, numUniqueUsers, searchTerm, searchResults, searchLoading, privateChannel, isChannelStarred, typingUsers, messagesLoading } = this.state;
 
     return (
       <React.Fragment>
@@ -238,7 +247,8 @@ class Messages extends Component {
           isChannelStarred={isChannelStarred}
         />
         <Segment>
-          <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
+          <Comment.Group className='messages'>
+            {this.displayMessageSkeleton(messagesLoading)}
             {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
             {this.displayTypingUsers(typingUsers)}
             <div ref={node => (this.messagesEnd = node)}></div>
